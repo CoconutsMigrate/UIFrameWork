@@ -1,0 +1,90 @@
+<html>
+<head>
+	<title>Framework Test</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<script src="GridPanel.js"></script>
+	<script src="CommonFns.js"></script>
+	<link href="fw.css" rel="stylesheet">
+	
+</head>
+<body>
+
+<div id="panel1"></div>
+<hr>
+<div id="panel2"></div>
+
+</body>
+<script>
+var MODEL = {
+	basic: {
+		name: "Greg",
+		nameClass: "nw", // This way, we can update the class from the model
+		rate: 8,
+		select: "OK"
+	},
+	coll: [
+		{ name: "A", rate: 5, "name-visible": null, "rate-valid": null },
+		{ name: "B", rate: 3, "name-visible": null, "rate-valid": null }
+	]
+}
+
+var UI1 = [ // each object below represents a row
+	{
+		type: "object", templates: [
+			{ id: "namel", type: "label", value: "Name", class: "small-width" },
+			{ id: "name", type: "text", path: "basic.name", bind: [{"name": "className", "value": "normal-width valid-{{{basic.select-ok}}}" }] }
+		],
+	},
+	{
+		type: "object", templates: [
+			{ id: "ratel", type: "label", value: "Rate", class: "small-width" },
+			{ id: "rate", type: "number", path: "basic.rate", class: "normal-width" }
+		]
+	},
+	{
+		type: "object", templates: [
+			{ id: "selectl", type: "label", value: "Select", class: "small-width" },
+			{ id: "select", type: "select", options: ";OK;Cancel", path: "basic.select", class: "normal-width" }
+		]
+	}
+];
+var UI2 = [
+	{
+		type: "object", templates: [
+			{ id: "ln", type: "label", value: "Name", class: "normal-width bold" },
+			{ id: "lr", type: "label", value: "Rate", class: "normal-width bold" },
+		],
+	},
+	{ type: "array", id: "coll", path: "coll", templates: [
+		{ id: "collname", type: "text", path: "coll.INDEX.name", bind: [{"name": "className", "value": "normal-width visible-{{{coll.INDEX.name-visible}}}"}] },
+		{ id: "collrate", type: "number", path: "coll.INDEX.rate", bind: [{"name": "className", "value": "normal-width valid-{{{coll.INDEX.rate-valid}}}"}] },
+	]}
+];
+
+var handler1 = function(id, path) {
+	console.log("handler1", id, path);
+	MODEL.basic["select-ok"] = MODEL.basic.select === "OK";
+	p1.modelToUI();
+};
+
+var handler2 = function(id, path) {
+	console.log("handler2", id, path);
+	for (var i in MODEL.coll) {
+		var v = MODEL.coll[i];
+		v["name-visible"] = v.rate >= 0;
+		v["rate-valid"] = v.rate >= 0 && v.rate <= 10;
+	}
+	p2.modelToUI();
+};
+
+var p1 = new fwk.GridPanel(UI1, MODEL, handler1);
+p1.setPanel(document.getElementById("panel1"));
+
+var p2 = new fwk.GridPanel(UI2, MODEL, handler2);
+p2.setPanel(document.getElementById("panel2"));
+
+// MODEL.coll.push({ name: "C", rate: 1 }); p2.setPanel(document.getElementById("panel2"));
+</script>
+</html>
+
+

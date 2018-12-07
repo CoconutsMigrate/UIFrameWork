@@ -1,0 +1,33 @@
+.normal-width {
+	width: 200px;
+}
+
+.small-width {
+	width: 80px;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.visible-true {
+	
+}
+
+.visible-false {
+	display: none;
+}
+
+.valid-true {
+	
+}
+
+.valid-false {
+	border-color: red;
+    border-style: double;
+    background-color: #fff0f0;
+}
+
+label {
+	display: block;
+}
